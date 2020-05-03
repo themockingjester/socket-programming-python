@@ -1,0 +1,40 @@
+client.py
+######################################################################################################################################
+import socket
+
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((socket.gethostname(), 65432))
+        file = 't.mp4'
+        f = open(file, 'rb')
+        l = f.read(1024)
+
+        while (l):
+            s.send(l)
+
+            l = f.read(1024)
+        f.close()
+        s.close()
+######################################################################################################################################
+server.py
+######################################################################################################################################
+import socket
+while True:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((socket.gethostname(), 65432))
+    s.listen(5)
+    print('working')
+    # now our endpoint knows about the OTHER endpoint.
+    clientsocket, address = s.accept()
+    print(f"Connection from {address} has been established.")
+    with open('received_file.mp4', 'wb') as f:
+        l = clientsocket.recv(1024)
+        while (l):
+
+
+            f.write(l)
+            l=clientsocket.recv(1024)
+    f.close()
+    clientsocket.close()
+    s.close()
+
+######################################################################################################################################
